@@ -1,28 +1,18 @@
 package dx.idea;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import dx.core.DxCaptureConfig;
+import dx.core.module.camera.DxCaptureConfig;
 import dx.framework.utils.Imshow;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.videoio.VideoCapture;
-
-import static org.opencv.videoio.Videoio.CV_CAP_PROP_AUTOFOCUS;
-import static org.opencv.videoio.Videoio.CV_CAP_PROP_FPS;
-import static org.opencv.videoio.Videoio.CV_CAP_PROP_FRAME_HEIGHT;
-import static org.opencv.videoio.Videoio.CV_CAP_PROP_FRAME_WIDTH;
 
 /**
  * Created by 洞玄 on 2017/12/3.
@@ -72,9 +62,10 @@ public class TwoCamera {
 
     public void init(int shot1Index, int shot2Index) {
         DxCaptureConfig config = new DxCaptureConfig();
+        config.setFrameSize(new Size(1920, 1080));
 
         tasks.add(new DxVideoCaptureTask(shot1Index, config));
-        //tasks.add(new DxVideoCaptureTask(shot2Index, config));
+//        tasks.add(new DxVideoCaptureTask(shot2Index, config));
     }
 
     public void sync_000() throws Exception {
@@ -94,7 +85,7 @@ public class TwoCamera {
 
     public static void main(String[] args) throws Exception {
         TwoCamera tc = new TwoCamera();
-        tc.init(0, 2);
+        tc.init(0, 1);
         tc.sync_000();
     }
 
