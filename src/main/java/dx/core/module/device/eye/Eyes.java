@@ -7,6 +7,7 @@ import dx.core.struct.AbstractLifeCycle;
 import dx.core.struct.DxMatFrame;
 import dx.framework.utils.Imshow;
 import org.opencv.core.Core;
+import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.videoio.VideoCapture;
 
@@ -59,10 +60,17 @@ public class Eyes extends AbstractLifeCycle {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         InputableNeuron<DxMatFrame> monitor = new InputableNeuron<DxMatFrame>() {
-            Imshow imshow = new Imshow("m");
+            Mat dst = new Mat();
+            Imshow imshow1 = new Imshow("m1");
+            Imshow imshow2 = new Imshow("m2");
+            Imshow imshowDst = new Imshow("dst");
             @Override
             public void receive(DxMatFrame dxMatFrame) {
-                imshow.showImage(dxMatFrame.getMats().get(0));
+                List<Mat> mats = dxMatFrame.getMats();
+                imshow1.showImage(mats.get(0));
+                imshow2.showImage(mats.get(1));
+                Core.addWeighted(mats.get(0), 0.5d, mats.get(1), 0.5d, 0.0d, dst);
+                imshowDst.showImage(dst);
             }
         };
 
@@ -72,7 +80,7 @@ public class Eyes extends AbstractLifeCycle {
         DxCaptureConfig config = new DxCaptureConfig();
         config.setFrameSize(new Size(640,480));
         config.setFps(30);
-        Eyes eyes = new Eyes(1, config, eyesChannelNeuron);
+        Eyes eyes = new Eyes(2, config, eyesChannelNeuron);
         eyes.start();
         System.in.read();
     }
